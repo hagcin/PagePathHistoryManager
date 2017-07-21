@@ -1,4 +1,6 @@
 <?php
+namespace ProcessWire;
+use PDO;
 
 /**
  * Page Path History Manager Module
@@ -71,7 +73,7 @@ class PagePathHistoryManager extends WireData implements Module
         foreach ($implementingModules as $moduleName) {
             if ($this->modules->isInstalled($moduleName)) {
                 $active = true;
-                $this->dbTableName = constant($moduleName . '::dbTableName');
+                $this->dbTableName = PagePathHistory::dbTableName;
                 break;
             }
         }
@@ -84,7 +86,7 @@ class PagePathHistoryManager extends WireData implements Module
         // Add hooks and setup needed variables
         $this->editUrl = $this->config->urls->admin . 'page/edit/';
 
-        $processPageName = strtolower(get_class($this));
+        $processPageName = strtolower($this->className());
         $this->processPage = $this->pages->get("name={$processPageName},has_parent={$this->config->adminRootPageID},include=all");
 
         $this->addHookBefore('ProcessPageEdit::execute', $this, 'hookBeforeProcessPageEditExecute');
